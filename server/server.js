@@ -26,7 +26,7 @@ app.use(express.json());
 app.set('trust proxy', 1);
 app.use(cookieParser());
 app.use(cors({
-  origin: process.env.CLIENT_ORIGIN || 'http://localhost:3000',
+  origin: "https://happybit.live",
   credentials: true,
 }));
 
