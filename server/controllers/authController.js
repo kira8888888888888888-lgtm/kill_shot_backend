@@ -121,6 +121,7 @@ exports.loginUser = async (req, res) => {
       sameSite: 'none',
       secure: process.env.NODE_ENV === 'production',
       maxAge: 15 * 60 * 1000, // 15 минут
+      path: '/',
     });
 
     res.cookie('refreshToken', refreshToken, {
@@ -128,6 +129,7 @@ exports.loginUser = async (req, res) => {
       sameSite: 'none',
       secure: process.env.NODE_ENV === 'production',
       maxAge: 30 * 24 * 60 * 60 * 1000, // 30 дней
+      path: '/',
     });
 
     return res.json({ message: 'Logged in successfully', userId: user._id, userEmail: user.email_address,isAdmin:user.isAdmin});
@@ -171,6 +173,7 @@ exports.refreshToken = async (req, res) => {
       sameSite: 'none',
       secure: process.env.NODE_ENV === 'production',
       maxAge: 15 * 60 * 1000,
+      path: '/',
     });
 
     res.cookie('refreshToken', newRefreshToken, {
@@ -178,6 +181,7 @@ exports.refreshToken = async (req, res) => {
       sameSite: 'none',
       secure: process.env.NODE_ENV === 'production',
       maxAge: 30 * 24 * 60 * 60 * 1000,
+      path: '/',
     });
 
     return res.json({ message: 'Tokens refreshed successfully' });
