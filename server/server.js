@@ -30,14 +30,23 @@ app.use(cors({
   credentials: true,
 }));
 
-// ⚙️ CSRF middleware (cookie-based)
+// // ⚙️ CSRF middleware (cookie-based)
+// const csrfProtection = csrf({
+//   cookie: {
+//     httpOnly: true,
+//     secure: process.env.NODE_ENV === 'production',
+//     sameSite: 'none',
+//   },
+// });
 const csrfProtection = csrf({
   cookie: {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'none',
-  },
+    secure: true,
+    sameSite: "none",
+    path: "/"    // обязательно для мобильных браузеров
+  }
 });
+
 
 // 🚪 CSRF token route (GET) — отдаёт токен
 app.get('/api/auth/csrf-token', csrfProtection, (req, res) => {
