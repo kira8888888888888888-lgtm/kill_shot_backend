@@ -118,14 +118,14 @@ exports.loginUser = async (req, res) => {
 
     res.cookie('token', accessToken, {
       httpOnly: true,
-      sameSite: 'lax',
+      sameSite: 'none',
       secure: process.env.NODE_ENV === 'production',
       maxAge: 15 * 60 * 1000, // 15 минут
     });
 
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
-      sameSite: 'lax',
+      sameSite: 'none',
       secure: process.env.NODE_ENV === 'production',
       maxAge: 30 * 24 * 60 * 60 * 1000, // 30 дней
     });
@@ -168,14 +168,14 @@ exports.refreshToken = async (req, res) => {
 
     res.cookie('token', newAccessToken, {
       httpOnly: true,
-      sameSite: 'lax',
+      sameSite: 'none',
       secure: process.env.NODE_ENV === 'production',
       maxAge: 15 * 60 * 1000,
     });
 
     res.cookie('refreshToken', newRefreshToken, {
       httpOnly: true,
-      sameSite: 'lax',
+      sameSite: 'none',
       secure: process.env.NODE_ENV === 'production',
       maxAge: 30 * 24 * 60 * 60 * 1000,
     });
