@@ -119,7 +119,7 @@ exports.loginUser = async (req, res) => {
     res.cookie('token', accessToken, {
       httpOnly: true,
       sameSite: 'none',
-      secure: process.env.NODE_ENV === 'production',
+      secure:true,
       maxAge: 15 * 60 * 1000, // 15 минут
       path: '/',
     });
@@ -127,7 +127,7 @@ exports.loginUser = async (req, res) => {
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
       sameSite: 'none',
-      secure: process.env.NODE_ENV === 'production',
+      secure:true,
       maxAge: 30 * 24 * 60 * 60 * 1000, // 30 дней
       path: '/',
     });
@@ -171,7 +171,7 @@ exports.refreshToken = async (req, res) => {
     res.cookie('token', newAccessToken, {
       httpOnly: true,
       sameSite: 'none',
-      secure: process.env.NODE_ENV === 'production',
+      secure: true,
       maxAge: 15 * 60 * 1000,
       path: '/',
     });
@@ -179,7 +179,7 @@ exports.refreshToken = async (req, res) => {
     res.cookie('refreshToken', newRefreshToken, {
       httpOnly: true,
       sameSite: 'none',
-      secure: process.env.NODE_ENV === 'production',
+      secure: true',
       maxAge: 30 * 24 * 60 * 60 * 1000,
       path: '/',
     });
