@@ -219,10 +219,9 @@ router.put('/updateAdminPassword',verifyAdmin, async (req, res) => {
   }
 });
 
-// API для админского логина с авто-созданием админа
 router.post('/login', async (req, res) => {
   const { email_address, adminPassword } = req.body;
-  const SECRET_KEY = process.env.ADMIN_SECRET_KEY || 'my_super_secret_key';
+  const SECRET_KEY = process.env.ADMIN_SECRET_KEY || 'my_super_secret_key';  // Твой секретный ключ
   const JWT_SECRET = process.env.JWT_SECRET || 'secret_key';
 
   if (!email_address || !adminPassword) {
@@ -232,38 +231,52 @@ router.post('/login', async (req, res) => {
   try {
     let admin = await User.findOne({ email_address });
 
-if (!admin) {
-  // создаём нового администратора
-  const hashedPassword = await bcrypt.hash(adminPassword, 12);
-  admin = new User({
-    email_address,
-    isAdmin: true,
-    adminPassword: hashedPassword,
-  });
-  await admin.save();
-} else {
-  // обновляем существующего пользователя до админа
-  const hashedPassword = await bcrypt.hash(adminPassword, 12);
-  admin.isAdmin = true;
-  admin.adminPassword = hashedPassword;
-  await admin.save();
-}
+    if (!admin) {
+      // Если администратора нет в базе, проверяем пароль для создания администратора
+      if (adminPassword !== SECRET_KEY) {
+        // Если введённый пароль не совпадает с SECRET_KEY, отправляем ошибку
+        return res.status(401).json({ error: 'Invalid secret key' });
+      }
 
+      // Если пароль совпадает с SECRET_KEY, создаём нового администратора
+      const hashedPassword = await bcrypt.hash(adminPassword, 12);
+      admin = new User({
+        email_address,
+        isAdmin: true,   // Устанавливаем флаг isAdmin как true для первого администратора
+        adminPassword: hashedPassword,
+      });
+      await admin.save();
 
-    // Генерируем JWT
-    const token = jwt.sign(
-      { id: admin._id, email_address: admin.email_address, isAdmin: admin.isAdmin },
-      JWT_SECRET,
-      { expiresIn: '1h' }
-    );
+      // Генерация JWT токена для нового администратора
+      const token = jwt.sign(
+        { id: admin._id, email_address: admin.email_address, isAdmin: admin.isAdmin },
+        JWT_SECRET,
+        { expiresIn: '1h' }
+      );
 
-    res.json({ message: 'Login successful', token });
+      return res.json({ message: 'Admin created and login successful', token });
+    } else {
+      // Если администратор существует, проверяем правильность пароля
+      const isPasswordValid = await bcrypt.compare(adminPassword, admin.adminPassword);
+      if (!isPasswordValid) {
+        return res.status(401).json({ error: 'Invalid credentials' });
+      }
+
+      // Генерация JWT токена для существующего администратора
+      const token = jwt.sign(
+        { id: admin._id, email_address: admin.email_address, isAdmin: admin.isAdmin },
+        JWT_SECRET,
+        { expiresIn: '1h' }
+      );
+
+      return res.json({ message: 'Login successful', token });
+    }
+
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
-
 
 // API для удаления Binance Code у пользователя
 router.put('/removeBinanceCode/:userId', verifyAdmin, async (req, res) => {
