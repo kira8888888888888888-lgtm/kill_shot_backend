@@ -30,21 +30,13 @@ app.use(cors({
   credentials: true,
 }));
 
-// // ⚙️ CSRF middleware (cookie-based)
-// const csrfProtection = csrf({
-//   cookie: {
-//     httpOnly: true,
-//     secure: process.env.NODE_ENV === 'production',
-//     sameSite: 'none',
-//   },
-// });
+// ⚙️ CSRF middleware (cookie-based)
 const csrfProtection = csrf({
   cookie: {
     httpOnly: true,
-    secure: true,
-    sameSite: "none",
-    path: "/"    // обязательно для мобильных браузеров
-  }
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+  },
 });
 
 
