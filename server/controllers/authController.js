@@ -118,18 +118,16 @@ exports.loginUser = async (req, res) => {
 
     res.cookie('token', accessToken, {
       httpOnly: true,
-      sameSite: 'none',
+      sameSite: 'lax',
       secure:true,
       maxAge: 15 * 60 * 1000, // 15 минут
-      path: '/',
     });
 
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
-      sameSite: 'none',
+      sameSite: 'lax',
       secure:true,
       maxAge: 30 * 24 * 60 * 60 * 1000, // 30 дней
-      path: '/',
     });
 
     return res.json({ message: 'Logged in successfully', userId: user._id, userEmail: user.email_address,isAdmin:user.isAdmin});
@@ -170,18 +168,16 @@ exports.refreshToken = async (req, res) => {
 
     res.cookie('token', newAccessToken, {
       httpOnly: true,
-      sameSite: 'none',
+      sameSite: 'lax',
       secure: true,
       maxAge: 15 * 60 * 1000,
-      path: '/',
     });
 
     res.cookie('refreshToken', newRefreshToken, {
       httpOnly: true,
-      sameSite: 'none',
+      sameSite: 'lax',
       secure: true,
       maxAge: 30 * 24 * 60 * 60 * 1000,
-      path: '/',
     });
 
     return res.json({ message: 'Tokens refreshed successfully' });
